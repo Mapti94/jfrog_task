@@ -5,6 +5,12 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      docker_tag:
+      description: 'Docker image tag'
+      required: false
+      default: 'latest'
+      type: string
 permissions:
   actions: read # for detecting the Github Actions environment.
   id-token: write # for creating OIDC tokens for signing.
@@ -18,10 +24,10 @@ jobs:
   build-publish-docker:
     runs-on: ubuntu-latest
     env:
-      DOCKER_REPO: <SET YOUR DOCKER VIRTUAL/LOCAL/REMOTE REPO HERE>
-      IMAGE_NAME: myApp
+      DOCKER_REPO: http://matanassignment.jfrog.io:8081/artifactory/api/docker/<repository key>
+      IMAGE_NAME: assignment
       JF_URL: https://${{ vars.JF_URL }}/
-      NPM_VIRTUAL_REPO: <SET YOUR NPM VIRTUAL/LOCAL/REMOTE REPO HERE>
+      NPM_VIRTUAL_REPO: matanassignment-npm-remote
       DOCKER_BUILD_SUMMARY: false
       DOCKER_BUILD_RECORD_UPLOAD: false
       JFROG_CLI_LOG_LEVEL: DEBUG
@@ -34,7 +40,7 @@ jobs:
       uses: jfrog/setup-jfrog-cli@v4
       id: setup-cli
       env:
-        JF_URL: https://matanassignment.jfrog.io
+        JF_URL: https://${{ vars.JF_URL }}/
       with:
         oidc-provider-name: jfrog-github-oidc #Establish an OIDC connection to allow trust between the workflow and your JFrog instance
     
