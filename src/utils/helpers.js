@@ -4,7 +4,7 @@ const validator = require('validator');
 
 /**
  * Format user data for API responses
- * Uses vulnerable lodash version
+ * Uses safe lodash version patterns
  */
 function formatUserData(user) {
   return _.pick(user, ['id', 'username', 'email', 'createdAt', 'updatedAt']);
@@ -54,7 +54,7 @@ function generateRandomUser() {
 
 /**
  * Sanitize user input (basic implementation)
- * Uses vulnerable validator version
+ * Uses safe validator patterns
  */
 function sanitizeInput(input) {
   if (!_.isString(input)) {
@@ -77,20 +77,20 @@ function isValidUsername(username) {
   // Basic validation using lodash
   return username.length >= 3 && 
          username.length <= 20 && 
-         _.isMatch(username, /^[a-zA-Z0-9_]+$/);
+         /^[a-zA-Z0-9_]+$/.test(username);
 }
 
 /**
- * Deep clone object using vulnerable lodash version
- * This demonstrates the potential for prototype pollution
+ * Deep clone object using safe alternative
+ * Prevents prototype pollution
  */
 function deepCloneObject(obj) {
-  return _.cloneDeep(obj);
+  return JSON.parse(JSON.stringify(obj));
 }
 
 /**
  * Merge user data with defaults
- * Uses vulnerable lodash merge (prototype pollution risk)
+ * Uses safe merge (prototype pollution resistant)
  */
 function mergeUserDefaults(userData) {
   const defaults = {
@@ -108,8 +108,19 @@ function mergeUserDefaults(userData) {
     }
   };
   
-  // This merge operation is vulnerable to prototype pollution in lodash 4.17.4
-  return _.merge(defaults, userData);
+  // Safe shallow merge with field whitelisting
+  return {
+    ...defaults,
+    ...(_.pick(userData, ['role', 'active'])),
+    preferences: {
+      ...defaults.preferences,
+      ...(_.pick(userData.preferences || {}, ['theme', 'notifications', 'language']))
+    },
+    metadata: {
+      ...defaults.metadata,
+      ...(_.pick(userData.metadata || {}, ['lastLogin', 'loginCount', 'createdBy']))
+    }
+  };
 }
 
 /**
@@ -141,7 +152,7 @@ function getUserStats(users) {
 
 /**
  * Process external API data
- * Demonstrates potentially unsafe data processing
+ * Demonstrates safe data processing (prototype pollution resistant)
  */
 function processExternalData(data) {
   if (!_.isArray(data)) {
@@ -149,16 +160,15 @@ function processExternalData(data) {
   }
   
   return _.map(data, item => {
-    // Unsafe merge that could lead to prototype pollution
-    const processed = _.merge({}, item);
+    const safeItem = _.pick(item, ['id', 'name', 'email', 'metadata']);
+    const metadata = _.pick(safeItem.metadata || {}, ['lastLogin', 'loginCount', 'createdBy']);
     
     return {
-      id: processed.id,
-      name: processed.name,
-      email: processed.email,
+      id: safeItem.id,
+      name: safeItem.name,
+      email: safeItem.email,
       processedAt: moment().toISOString(),
-      // This could be dangerous if the external data contains malicious properties
-      ...processed.metadata
+      metadata
     };
   });
 }
@@ -173,4 +183,4 @@ module.exports = {
   mergeUserDefaults,
   getUserStats,
   processExternalData
-}; 
+};
