@@ -51,7 +51,7 @@ jobs:
       run: jf npm-config --repo-resolve=${{ env.NPM_VIRTUAL_REPO }} --repo-deploy=${{ env.NPM_VIRTUAL_REPO }}
 
     - name: build webapp
-      run: jf npm ci
+      run: jf npm install
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
