@@ -62,7 +62,7 @@ jobs:
       with:
         push: true
         context: .
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
         tags: ${{ vars.JF_URL }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}:V2
         provenance: false
 
