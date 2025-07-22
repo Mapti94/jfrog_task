@@ -41,8 +41,7 @@ jobs:
         jf c add matanassignment \
           --url=https://${{ vars.JF_URL }} \
           --access-token=${{ secrets.JF_ACCESS_TOKEN }} \
-          --interactive=false \
-          --default=true
+          --interactive=false
       env:
         JFROG_CLI_OFFER_CONFIG: false
 
@@ -53,7 +52,7 @@ jobs:
       run: jf npm install
 
     - name: Authenticate Docker
-      run: jf docker login ${{ vars.JF_URL }}
+      run: jf docker login ${{ vars.JF_URL }} --server-id=matanassignment
 
     - name: Build the Docker image
       uses: docker/build-push-action@v6
