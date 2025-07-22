@@ -70,12 +70,12 @@ jobs:
         push: true
         context: .
         platforms: linux/amd64,linux/arm64
-        tags: ${{ vars.JF_URL }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        tags: ${{ vars.JF_URL }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}:V1
         provenance: false
 
     - name: add docker package to build
       run: |
-           echo "${{ vars.JF_URL }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" > metadata.json
+           echo "${{ vars.JF_URL }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}:V1" > metadata.json
            jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json
            
     - name: publish build info
