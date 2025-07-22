@@ -41,7 +41,8 @@ jobs:
         jf c add matanassignment \
           --url=https://${{ vars.JF_URL }} \
           --access-token=${{ secrets.JF_ACCESS_TOKEN }} \
-          --interactive=false
+          --interactive=false \
+          --default=true
       env:
         JFROG_CLI_OFFER_CONFIG: false
 
