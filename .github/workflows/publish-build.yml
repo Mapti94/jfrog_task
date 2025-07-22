@@ -73,6 +73,6 @@ jobs:
            
     - name: publish build info
       run: |
-        jf rt build-collect-env
-        jf rt build-add-git
-        jf rt build-publish
+        jf rt build-collect-env assignmentv2 ${{ github.run_id }}
+        jf rt build-add-git assignmentv2 ${{ github.run_id }}
+        jf rt build-publish assignmentv2 ${{ github.run_id }}
