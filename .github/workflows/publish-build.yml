@@ -60,7 +60,7 @@ jobs:
       uses: docker/login-action@v3
       with:
          registry: ${{ vars.JF_URL }}
-         username: ci-user # Using ci-user for Docker registry auth
+         username: ${{ secrets.JF_USER }} # I added my Artifactory username as a variable for secure authentication
          password: ${{ secrets.JF_ACCESS_TOKEN }}
 
     - name: Build the Docker image
